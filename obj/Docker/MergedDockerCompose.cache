@@ -1,0 +1,58 @@
+name: dockercompose5709996510018248736
+services:
+  autos:
+    build:
+      context: C:\Users\usuario\source\repos\autos
+      dockerfile: autos/Dockerfile
+    container_name: autos_api
+    depends_on:
+      database:
+        condition: service_started
+        required: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "5000"
+      ConnectionStrings__DefaultConnection: Host=database;Database=autos;Username=postgres;Password=postgres
+    image: autos
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5000
+        published: "5000"
+        protocol: tcp
+      - mode: ingress
+        target: 5001
+        published: "5001"
+        protocol: tcp
+      - mode: ingress
+        target: 5000
+        protocol: tcp
+      - mode: ingress
+        target: 5001
+        protocol: tcp
+  database:
+    container_name: autos_database
+    environment:
+      POSTGRES_DB: autos
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    image: postgres:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
+        volume: {}
+networks:
+  default:
+    name: dockercompose5709996510018248736_default
+volumes:
+  postgres_data:
+    name: dockercompose5709996510018248736_postgres_data
